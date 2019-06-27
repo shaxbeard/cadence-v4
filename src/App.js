@@ -3,10 +3,13 @@ import "./App.css";
 import Spotify from "spotify-web-api-js";
 import axios from "axios";
 
+import PlaylistTracks from "./PlaylistTracks";
+
 const spotifyWebApi = new Spotify();
 
 class App extends Component {
   state = {
+    access_tkn: "",
     nowPlaying: {
       name: "Not Checked",
       image: ""
@@ -15,6 +18,7 @@ class App extends Component {
 
   componentDidMount() {
     const params = this.getHashParams();
+    this.setState({ access_tkn: params.access_token });
 
     if (params.access_token) {
       spotifyWebApi.setAccessToken(params.access_token);
@@ -31,9 +35,6 @@ class App extends Component {
       )
       .then(response => {
         console.log(response);
-        // this.setState({
-        //   playlistTracks: response.data.items
-        // });
       });
   }
 
@@ -83,6 +84,7 @@ class App extends Component {
         <button onClick={() => this.fetchPlaylistTracks()}>
           Check Now Playing
         </button>
+        <PlaylistTracks token={this.state.access_tkn} />
       </div>
     );
   }
