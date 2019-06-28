@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
 import Spotify from "spotify-web-api-js";
-import axios from "axios";
+import PlaylistList from "./PlaylistList";
+import PlaylistDetail from "./PlaylistDetail";
 
 import PlaylistTracks from "./PlaylistTracks";
 
@@ -10,10 +11,8 @@ const spotifyWebApi = new Spotify();
 class App extends Component {
   state = {
     access_tkn: "",
-    nowPlaying: {
-      name: "Not Checked",
-      image: ""
-    }
+    userPlaylists: [],
+    playlistId: null
   };
 
   componentDidMount() {
@@ -23,19 +22,6 @@ class App extends Component {
     if (params.access_token) {
       spotifyWebApi.setAccessToken(params.access_token);
     }
-
-    axios
-      .get(
-        "https://api.spotify.com/v1/playlists/0UeDsSYClhiopusVz5tZxJ/tracks",
-        {
-          headers: {
-            Authorization: "Bearer " + params.access_token
-          }
-        }
-      )
-      .then(response => {
-        console.log(response);
-      });
   }
 
   getHashParams() {
@@ -49,27 +35,16 @@ class App extends Component {
     return hashParams;
   }
 
-  getNowPlaying = () => {
-    spotifyWebApi.getMyCurrentPlaybackState().then(response => {
+  fetchUserPlaylists() {
+    spotifyWebApi.getUserPlaylists().then(response => {
       this.setState({
-        nowPlaying: {
-          name: response.item.name,
-          image: response.item.album.images[0].url
-        }
+        userPlaylists: response.items
       });
     });
-  };
+  }
 
-  fetchPlaylistTracks = () => {
-    spotifyWebApi.getPlaylistTracks().then(response => {
-      console.log(response);
-      // this.setState({
-      //   nowPlaying: {
-      //     name: response.item.name,
-      //     image: response.item.album.images[0].url
-      //   }
-      // });
-    });
+  onPlaylistSelect = playlist => {
+    this.setState({ playlistId: playlist.id });
   };
 
   render() {
@@ -78,13 +53,17 @@ class App extends Component {
         <a href="http://localhost:8888">
           <button>Login with Spotify</button>
         </a>
-        <div> Now Playing {this.state.nowPlaying.name}</div>
-        <img src={this.state.nowPlaying.image} />
         <div />
-        <button onClick={() => this.fetchPlaylistTracks()}>
-          Check Now Playing
+        Playlist ID: {this.state.playlistId} <br />
+        <button onClick={() => this.fetchUserPlaylists()}>
+          Fetch Playlists
         </button>
+        <PlaylistDetail playlistId={this.state.playlistId} />
         <PlaylistTracks token={this.state.access_tkn} />
+        <PlaylistList
+          userPlaylists={this.state.userPlaylists}
+          onPlaylistSelect={this.onPlaylistSelect}
+        />
       </div>
     );
   }
