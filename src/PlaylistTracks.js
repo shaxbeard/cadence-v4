@@ -6,8 +6,11 @@ class PlaylistTracks extends React.Component {
   state = { playlistTrackList: [] };
 
   fetchPlaylistTracks = async () => {
+    console.log(this.props.playlistId);
     const response = await axios.get(
-      "https://api.spotify.com/v1/playlists/0UeDsSYClhiopusVz5tZxJ/tracks",
+      "https://api.spotify.com/v1/playlists/" +
+        this.props.playlistId +
+        "/tracks",
       {
         headers: {
           Authorization: "Bearer " + this.props.token

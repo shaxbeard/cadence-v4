@@ -1,11 +1,11 @@
 import React from "react";
 
-const PlaylistDetail = props => {
-  if (!props.playlistId) {
+const PlaylistDetail = ({ playlistId }) => {
+  if (!playlistId) {
     return <div>Loading...</div>;
   }
-  console.log(props.playlistId);
-  return <div>{props.playlistId}</div>;
+  // console.log(playlistId);
+  return <div>What is this?</div>;
 };
 
 export default PlaylistDetail;

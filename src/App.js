@@ -58,8 +58,11 @@ class App extends Component {
         <button onClick={() => this.fetchUserPlaylists()}>
           Fetch Playlists
         </button>
+        <PlaylistTracks
+          token={this.state.access_tkn}
+          playlistId={this.state.playlistId}
+        />
         <PlaylistDetail playlistId={this.state.playlistId} />
-        <PlaylistTracks token={this.state.access_tkn} />
         <PlaylistList
           userPlaylists={this.state.userPlaylists}
           onPlaylistSelect={this.onPlaylistSelect}
